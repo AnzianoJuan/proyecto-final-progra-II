@@ -1,0 +1,78 @@
+{
+  "Historial": [
+    {
+      "coord": {
+        "lon": -60.0070992,
+        "lat": -33.4847984
+      },
+      "weather": [
+        {
+          "id": 801,
+          "main": "Clouds",
+          "description": "algo de nubes",
+          "icon": "02n"
+        }
+      ],
+      "main": {
+        "temp": 8.22999954,
+        "feels_like": 6.42000008,
+        "temp_max": 8.22999954,
+        "temp_min": 8.22999954,
+        "pressure": 1030,
+        "humidity": 61,
+        "sea_level": 1030
+      },
+      "wind": {
+        "speed": 2.94000006,
+        "deg": 150
+      },
+      "sys": {
+        "country": "AR"
+      },
+      "visibility": 10000,
+      "clouds": {
+        "all": 17
+      },
+      "name": "Ramallo"
+    },
+    {
+      "coord": {
+        "lon": -60.6393013,
+        "lat": -32.9468002
+      },
+      "weather": [
+        {
+          "id": 801,
+          "main": "Clouds",
+          "description": "algo de nubes",
+          "icon": "02n"
+        }
+      ],
+      "main": {
+        "temp": 12.5500002,
+        "feels_like": 11.5600004,
+        "temp_max": 12.79,
+        "temp_min": 9.94999981,
+        "pressure": 1028,
+        "humidity": 65,
+        "sea_level": 1028
+      },
+      "wind": {
+        "speed": 2.56999993,
+        "deg": 180
+      },
+      "sys": {
+        "country": "AR"
+      },
+      "visibility": 10000,
+      "clouds": {
+        "all": 20
+      },
+      "name": "Rosario"
+    }
+  ],
+  "CiudadesFavoritas": [],
+  "EstadoUsuario": 0,
+  "NombrePersona": "juan",
+  "Password": "123"
+}

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using System.Net.Http;
+using System.Text.Json;
 
 namespace Proyecto_Programacion_II
 {
@@ -49,18 +51,50 @@ namespace Proyecto_Programacion_II
 
         public void MostrarDatos()
         {
-            Console.WriteLine($"Coordenada , Longitud : {this.Coordenadas.Longitud} - Latitud : {this.Coordenadas.Latitud}");
+            //Console.WriteLine($"Coordenada , Longitud : {this.Coordenadas.Longitud} - Latitud : {this.Coordenadas.Latitud}");
             foreach (Clima clima in this.Clima)
             {
                 clima.MostrarDatos();
             }
             this.DatosDelClima.MostrarDatos();
-            Console.WriteLine($"Viento , Direccion :{this.Viento.Direccion} - Velocidad : {this.Viento.Velocidad}");
+            //Console.WriteLine($"Viento , Direccion :{this.Viento.Direccion} - Velocidad : {this.Viento.Velocidad}");
+            Console.WriteLine($"Nombre ciudad : {this.NombreCiudad}");
             Console.WriteLine($"Nacion : {this.Nacion.NombreNacion}");
             Console.WriteLine($"Visibilidad: {this.Visibilidad}");
             Console.WriteLine($"Nubes: {this.Nubes.Nubosidad}%");
-            Console.WriteLine($"Nombre ciudad : {this.NombreCiudad}");
+           
 
+
+        }
+
+        public static async Task<Pronostico> BuscarPronostico(string ciudad, string pais)
+        {
+            string uri = "";
+            string cadena = "";
+            Pronostico pronostico = new Pronostico();
+            try
+            {
+                HttpClient client = new HttpClient();
+                uri = $"https://api.openweathermap.org/data/2.5/weather?q={ciudad},{pais}&appid=68fdfc51189ff83605164cee70337d8c&units=metric&lang=es";
+                cadena = await client.GetStringAsync(uri);
+                pronostico = JsonSerializer.Deserialize<Pronostico>(cadena);
+                if (pronostico != null)
+                {
+                    pronostico.MostrarDatos();
+                    return pronostico;
+                }
+                else
+                {
+                    Console.WriteLine("No se pudo obtener el pronóstico para la ciudad especificada.");
+                    return null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
 
         }
 
