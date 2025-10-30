@@ -1,13 +1,9 @@
 [
-   {
-    "Historial": [
-
-    ],
-      "CiudadesFavoritas": [
-      ],
-      "EstadoUsuario": 0,
-      "NombrePersona": "admin",
-      "Password": "admin"
-   }
-  
+  {
+    "Historial": [],
+    "CiudadesFavoritas": [],
+    "EstadoUsuario": 0,
+    "NombrePersona": "admin",
+    "Password": "admin"
+  }
 ]

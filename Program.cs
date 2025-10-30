@@ -16,13 +16,57 @@ namespace Proyecto_Programacion_II
     internal class Program
     {
 
-        static string RutaJson = "../../Sistema.json";
+        const string RutaJson = "../../Sistema.json";
 
         static async Task Main(string[] args)
         {
-            int opcionMenuUsuario = 0;
-            Usuario cliente = CargarCliente(); // intenta cargar el usuario guardado
+            List<Usuario> usuarios = new List<Usuario>();
 
+            try
+            {
+                if (File.Exists(RutaJson))
+                {
+                    string json = File.ReadAllText(RutaJson);
+
+                    usuarios = JsonSerializer.Deserialize<List<Usuario>>(json) ?? new List<Usuario>();
+                }
+                else
+                {
+                    Console.WriteLine("Archivo no encontrado, se creará uno nuevo con el admin por defecto.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al deserializar el archivo JSON: {ex.Message}");
+            }
+
+            // Si no había usuarios, agregamos el admin por defecto
+            if (usuarios.Count == 0)
+            {
+                usuarios.Add(new Usuario
+                {
+                    NombrePersona = "admin",
+                    Password = "admin",
+                    EstadoUsuario = 0,
+                    CiudadesFavoritas = new List<string>(),
+                    Historial = new List<Pronostico>()
+                });
+
+                string jsonNuevo = JsonSerializer.Serialize(usuarios, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(RutaJson, jsonNuevo);
+            }
+
+            // Creamos el sistema con los usuarios cargados
+            Sistema sistema = new Sistema(usuarios);
+
+            //Console.WriteLine($"Usuario cargado: {sistema.Usuarios[0].NombrePersona}");
+
+
+            //Console.ReadKey();
+
+
+            int opcionMenuUsuario = 0;
+            
             while (opcionMenuUsuario != 3)
             {
                 Console.Clear(); // Limpia antes de mostrar el menú principal
@@ -30,158 +74,127 @@ namespace Proyecto_Programacion_II
 
                 if (opcionMenuUsuario == 1)
                 {
-                    Console.Clear();
-                    if (cliente != null)
-                    {
-                        Console.WriteLine("Ya existe un usuario. No puede crear otro.");
-                        Console.ReadKey(); // Esperar para ver el mensaje
-                    }
-                    else
-                    {
-                        Console.Write("Ingrese nombre: ");
-                        string nombre = Console.ReadLine();
-
-                        Console.Write("Ingrese contraseña: ");
-                        string contraseña = Console.ReadLine();
-                        cliente = new Usuario(nombre, contraseña);
-                        GuardarCliente(cliente);
-
-                        Console.WriteLine("Usuario creado y guardado correctamente.");
-                        Console.ReadKey(); // Esperar para ver el mensaje
-                    }
+                    sistema.Registrarse(RutaJson);
+                    
                 }
-                else if (opcionMenuUsuario == 2)
-                {
-                    Console.Clear();
-                    if (cliente == null)
-                    {
-                        Console.WriteLine("Primero cree un usuario.");
-                        Console.ReadKey();
-                    }
-                    else
-                    {
-                        bool sesion = IniciarSesion(ref cliente);
+            //    else if (opcionMenuUsuario == 2)
+            //    {
+            //        Console.Clear();
+            //        if (cliente == null)
+            //        {
+            //            Console.WriteLine("Primero cree un usuario.");
+            //            Console.ReadKey();
+            //        }
+            //        else
+            //        {
+            //            bool sesion = IniciarSesion(ref cliente);
 
-                        if (sesion)
-                        {
+            //            if (sesion)
+            //            {
                                
 
-                            int opcionMenuPronostico = 0;
-                            while (opcionMenuPronostico != 7)
-                            {
-                                Console.Clear(); // Limpia antes de mostrar el menú de pronóstico
-                                                 // Limpia antes de mostrar el menú de pronóstico
-                                opcionMenuPronostico = MenuPronostico();
+            //                int opcionMenuPronostico = 0;
+            //                while (opcionMenuPronostico != 7)
+            //                {
+            //                    Console.Clear(); // Limpia antes de mostrar el menú de pronóstico
+            //                                     // Limpia antes de mostrar el menú de pronóstico
+            //                    opcionMenuPronostico = MenuPronostico();
 
-                                // menu pronostico
+            //                    // menu pronostico
 
-                                if (opcionMenuPronostico == 1)
-                                {
-                                    Console.Clear();
-                                    Console.WriteLine("Ingrese ciudad:");
-                                    string ciudad = Console.ReadLine();
-                                    Console.WriteLine("Ingrese país:");
-                                    string pais = Console.ReadLine();
+            //                    if (opcionMenuPronostico == 1)
+            //                    {
+            //                        Console.Clear();
+            //                        Console.WriteLine("Ingrese ciudad:");
+            //                        string ciudad = Console.ReadLine();
+            //                        Console.WriteLine("Ingrese país:");
+            //                        string pais = Console.ReadLine();
 
-                                    // NOTA: Asume que Pronostico.BuscarPronostico existe y es visible.
-                                    Pronostico pronosticoBuscado = await Pronostico.BuscarPronostico(ciudad, pais);
+            //                        // NOTA: Asume que Pronostico.BuscarPronostico existe y es visible.
+            //                        Pronostico pronosticoBuscado = await Pronostico.BuscarPronostico(ciudad, pais);
 
-                                    if (pronosticoBuscado != null)
-                                    {
-                                        cliente.Historial.Add(pronosticoBuscado);
-                                        GuardarCliente(cliente);
-                                        pronosticoBuscado.MostrarDatos();
-                                        Console.WriteLine("Pronóstico agregado al historial.");
+            //                        if (pronosticoBuscado != null)
+            //                        {
+            //                            cliente.Historial.Add(pronosticoBuscado);
+            //                            GuardarCliente(cliente);
+            //                            pronosticoBuscado.MostrarDatos();
+            //                            Console.WriteLine("Pronóstico agregado al historial.");
 
-                                        Console.WriteLine("Quieres agregar esta ciudad/pais a tu lista de Favoritos?");
-                                        Console.WriteLine("1-Si\n2-No");
-                                        string cadena = Console.ReadLine();
-                                        int agregarCiudadInt;
+            //                            Console.WriteLine("Quieres agregar esta ciudad/pais a tu lista de Favoritos?");
+            //                            Console.WriteLine("1-Si\n2-No");
+            //                            string cadena = Console.ReadLine();
+            //                            int agregarCiudadInt;
 
-                                        while(!int.TryParse(cadena, out agregarCiudadInt) || agregarCiudadInt < 1 || agregarCiudadInt > 2)
-                                        {
-                                            Console.Write("Elija una de las opciones: ");
-                                            cadena = Console.ReadLine();
-                                        }   
+            //                            while(!int.TryParse(cadena, out agregarCiudadInt) || agregarCiudadInt < 1 || agregarCiudadInt > 2)
+            //                            {
+            //                                Console.Write("Elija una de las opciones: ");
+            //                                cadena = Console.ReadLine();
+            //                            }   
                                         
-                                        if(agregarCiudadInt == 1)
-                                        {
+            //                            if(agregarCiudadInt == 1)
+            //                            {
                                             
                                             
-                                            cadena = $"{pronosticoBuscado.NombreCiudad},{pronosticoBuscado.Nacion.NombreNacion}";
-                                            cliente.CiudadesFavoritas.Add(cadena);
-                                            GuardarCliente(cliente);
-                                            Console.WriteLine($"agregado a favoritos : {cadena}");
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine("no se guardo en favoritos");
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //Console.WriteLine("No se pudo obtener el pronóstico o la deserialización fue nula.");
-                                    }
-                                    Console.ReadKey(); // Esperar para ver el resultado
-                                }
-                                else if (opcionMenuPronostico == 2)
-                                {
-                                    Console.Clear();
-                                    cliente.MostrarDatos(); // Mostrar datos usuario
-                                    Console.ReadKey();
-                                }else if(opcionMenuPronostico == 3)
-                                {
-                                    Console.Clear(); // Limpia antes de mostrar el menú de pronóstico
-                                    cliente.MostrarHistorialPronosticos();
-                                    Console.ReadKey();
-                                }
-                                else if(opcionMenuPronostico == 4)
-                                {
-                                    Console.Clear();
-                                    Console.WriteLine("borrando historial..");
-                                    cliente.EliminarHistorial();
-                                    GuardarCliente(cliente);
-                                    Console.ReadKey();
+            //                                cadena = $"{pronosticoBuscado.NombreCiudad},{pronosticoBuscado.Nacion.NombreNacion}";
+            //                                cliente.CiudadesFavoritas.Add(cadena);
+            //                                GuardarCliente(cliente);
+            //                                Console.WriteLine($"agregado a favoritos : {cadena}");
+            //                            }
+            //                            else
+            //                            {
+            //                                Console.WriteLine("no se guardo en favoritos");
+            //                            }
+            //                        }
+            //                        else
+            //                        {
+            //                            //Console.WriteLine("No se pudo obtener el pronóstico o la deserialización fue nula.");
+            //                        }
+            //                        Console.ReadKey(); // Esperar para ver el resultado
+            //                    }
+            //                    else if (opcionMenuPronostico == 2)
+            //                    {
+            //                        Console.Clear();
+            //                        cliente.MostrarDatos(); // Mostrar datos usuario
+            //                        Console.ReadKey();
+            //                    }else if(opcionMenuPronostico == 3)
+            //                    {
+            //                        Console.Clear(); // Limpia antes de mostrar el menú de pronóstico
+            //                        cliente.MostrarHistorialPronosticos();
+            //                        Console.ReadKey();
+            //                    }
+            //                    else if(opcionMenuPronostico == 4)
+            //                    {
+            //                        Console.Clear();
+            //                        Console.WriteLine("borrando historial..");
+            //                        cliente.EliminarHistorial();
+            //                        GuardarCliente(cliente);
+            //                        Console.ReadKey();
                                 
-                                }
-                                else if(opcionMenuPronostico == 5)
-                                {
-                                    Console.Clear();
-                                    cliente.MostrarCiudadesFavoritas();
-                                    Console.ReadKey();
-                                }
-                                else if(opcionMenuPronostico == 6)
-                                {
-                                    Console.Clear();
-                                    cliente.EliminarUnFavorito();
-                                    GuardarCliente(cliente);
-                                    Console.ReadKey();
-                                }
-                            }
-                            Console.WriteLine("Saliste del menú de pronóstico.");
-                            Console.ReadKey();
-                        }
-                        else
-                        {
-                            // La sesión no pudo iniciar.
-                            Console.ReadKey();
-                        }
-                    }
-                }
-                //else if (opcionMenuUsuario == 3)
-                //{
-                //    Console.Clear();
-                //    if (cliente == null)
-                //    {
-                //        Console.WriteLine("Primero cree un usuario.");
-                //        Console.ReadKey();
-                //    }
-                //    else
-                //    {
-                //        ModificarUsuario(ref cliente);
-                //        Console.ReadKey();
-                //    }
-                //}
+            //                    }
+            //                    else if(opcionMenuPronostico == 5)
+            //                    {
+            //                        Console.Clear();
+            //                        cliente.MostrarCiudadesFavoritas();
+            //                        Console.ReadKey();
+            //                    }
+            //                    else if(opcionMenuPronostico == 6)
+            //                    {
+            //                        Console.Clear();
+            //                        cliente.EliminarUnFavorito();
+            //                        GuardarCliente(cliente);
+            //                        Console.ReadKey();
+            //                    }
+            //                }
+            //                Console.WriteLine("Saliste del menú de pronóstico.");
+            //                Console.ReadKey();
+            //            }
+            //            else
+            //            {
+            //                // La sesión no pudo iniciar.
+            //                Console.ReadKey();
+            //            }
+            //        }
+            //    }
             }
             Console.Clear();
             Console.WriteLine("Saliste del sistema...");
@@ -193,7 +206,7 @@ namespace Proyecto_Programacion_II
             string cadena;
 
             Console.WriteLine("--- MENU USUARIO ---");
-            Console.WriteLine("1. Crear usuario");
+            Console.WriteLine("1. Registrarse");
             Console.WriteLine("2. Iniciar sesión");
             Console.WriteLine("3. Salir");
             Console.Write("Seleccione una opción: ");
@@ -204,7 +217,7 @@ namespace Proyecto_Programacion_II
                 Console.Clear(); // Limpia si la entrada es incorrecta
                 Console.WriteLine($"INGRESA CORRECTAMENTE. USTED INGRESÓ: {cadena}");
                 Console.WriteLine("--- MENU USUARIO ---");
-                Console.WriteLine("1. Crear usuario");
+                Console.WriteLine("1. Registrarse");
                 Console.WriteLine("2. Iniciar sesión");
                 Console.WriteLine("3. Salir");
                 Console.Write("Seleccione una opción: ");
@@ -311,8 +324,31 @@ namespace Proyecto_Programacion_II
 
         static void GuardarCliente(Usuario usuario)
         {
-            string json = JsonSerializer.Serialize(usuario, new JsonSerializerOptions { WriteIndented = true });
-            System.IO.File.WriteAllText(RutaJson, json);
+            List<Usuario> usuarios = new List<Usuario>();
+
+            if (File.Exists(RutaJson))
+            {
+                string jsonExistente = File.ReadAllText(RutaJson);
+                if (!string.IsNullOrWhiteSpace(jsonExistente))
+                {
+                    usuarios = JsonSerializer.Deserialize<List<Usuario>>(jsonExistente) ?? new List<Usuario>();
+                }
+            }
+
+            // Verificamos si ya existe un usuario con ese nombre
+            var existente = usuarios.FirstOrDefault(u => u.NombrePersona == usuario.NombrePersona);
+
+            if (existente != null)
+            {
+                // Reemplazamos los datos
+                usuarios.Remove(existente);
+            }
+
+            usuarios.Add(usuario);
+
+            // Guardamos toda la lista nuevamente
+            string jsonNuevo = JsonSerializer.Serialize(usuarios, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(RutaJson, jsonNuevo);
         }
 
         static Usuario CargarCliente()
