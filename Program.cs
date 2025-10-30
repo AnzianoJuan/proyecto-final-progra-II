@@ -23,7 +23,7 @@ namespace Proyecto_Programacion_II
             int opcionMenuUsuario = 0;
             Usuario cliente = CargarCliente(); // intenta cargar el usuario guardado
 
-            while (opcionMenuUsuario != 4)
+            while (opcionMenuUsuario != 3)
             {
                 Console.Clear(); // Limpia antes de mostrar el menú principal
                 opcionMenuUsuario = MenuUsuario();
@@ -106,6 +106,8 @@ namespace Proyecto_Programacion_II
                                         
                                         if(agregarCiudadInt == 1)
                                         {
+                                            
+                                            
                                             cadena = $"{pronosticoBuscado.NombreCiudad},{pronosticoBuscado.Nacion.NombreNacion}";
                                             cliente.CiudadesFavoritas.Add(cadena);
                                             GuardarCliente(cliente);
@@ -166,20 +168,20 @@ namespace Proyecto_Programacion_II
                         }
                     }
                 }
-                else if (opcionMenuUsuario == 3)
-                {
-                    Console.Clear();
-                    if (cliente == null)
-                    {
-                        Console.WriteLine("Primero cree un usuario.");
-                        Console.ReadKey();
-                    }
-                    else
-                    {
-                        ModificarUsuario(ref cliente);
-                        Console.ReadKey();
-                    }
-                }
+                //else if (opcionMenuUsuario == 3)
+                //{
+                //    Console.Clear();
+                //    if (cliente == null)
+                //    {
+                //        Console.WriteLine("Primero cree un usuario.");
+                //        Console.ReadKey();
+                //    }
+                //    else
+                //    {
+                //        ModificarUsuario(ref cliente);
+                //        Console.ReadKey();
+                //    }
+                //}
             }
             Console.Clear();
             Console.WriteLine("Saliste del sistema...");
@@ -193,20 +195,18 @@ namespace Proyecto_Programacion_II
             Console.WriteLine("--- MENU USUARIO ---");
             Console.WriteLine("1. Crear usuario");
             Console.WriteLine("2. Iniciar sesión");
-            Console.WriteLine("3. Modificar usuario (olvido de credenciales)");
-            Console.WriteLine("4. Salir");
+            Console.WriteLine("3. Salir");
             Console.Write("Seleccione una opción: ");
             cadena = Console.ReadLine();
 
-            while (!int.TryParse(cadena, out opcion) || (opcion < 1 || opcion > 4))
+            while (!int.TryParse(cadena, out opcion) || (opcion < 1 || opcion > 3))
             {
                 Console.Clear(); // Limpia si la entrada es incorrecta
                 Console.WriteLine($"INGRESA CORRECTAMENTE. USTED INGRESÓ: {cadena}");
                 Console.WriteLine("--- MENU USUARIO ---");
                 Console.WriteLine("1. Crear usuario");
                 Console.WriteLine("2. Iniciar sesión");
-                Console.WriteLine("3. Modificar usuario (olvido de credenciales)");
-                Console.WriteLine("4. Salir");
+                Console.WriteLine("3. Salir");
                 Console.Write("Seleccione una opción: ");
                 cadena = Console.ReadLine();
             }
@@ -231,7 +231,7 @@ namespace Proyecto_Programacion_II
             Console.Write("Seleccione una opción: ");
             cadena = Console.ReadLine();
 
-            while (!int.TryParse(cadena, out opcion) || (opcion < 1 || opcion > 8))
+            while (!int.TryParse(cadena, out opcion) || (opcion < 1 || opcion > 7))
             {
                 Console.WriteLine("--- MENÚ PRONÓSTICO ---");
                 Console.WriteLine("1. Buscar pronóstico");
