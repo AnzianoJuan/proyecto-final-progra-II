@@ -13,7 +13,7 @@ namespace Proyecto_Programacion_II
         public List<string> CiudadesFavoritas { get; set; }
         public Tipo EstadoUsuario { get; set; }
 
-        public Usuario(string nombre,string pass) : base(nombre, pass)
+        public Usuario(string nombre, string pass) : base(nombre, pass)
         {
             this.NombrePersona = nombre;
             this.Password = pass;
@@ -30,7 +30,7 @@ namespace Proyecto_Programacion_II
             Console.WriteLine($"Nombre : {this.NombrePersona}");
             Console.WriteLine($"Password : {this.Password}");
             Console.WriteLine("-------------");
-           
+
         }
 
         public void MostrarHistorialPronosticos()
@@ -58,10 +58,9 @@ namespace Proyecto_Programacion_II
 
             // 2. Llamada a la API
             Pronostico busqueda = await Pronostico.BuscarPronostico(ciudadLimpia, paisLimpio);
-
             if (busqueda != null)
             {
-                
+
                 // Si la búsqueda es exitosa y pasa las validaciones (o el país es un nombre largo y confiamos en la API)
                 Console.WriteLine("✅ AGREGADA LA CIUDAD : " + busqueda.NombreCiudad);
                 this.CiudadesFavoritas.Add($"{busqueda.NombreCiudad},{busqueda.Nacion.NombreNacion}");
@@ -74,20 +73,80 @@ namespace Proyecto_Programacion_II
 
         public async void MostrarCiudadesFavoritas()
         {
+            int i = 1;
             Console.WriteLine("ciudades favoritas / paises y sus pronosticos");
             foreach (string item in this.CiudadesFavoritas)
             {
-                Console.WriteLine($"{item}");
+                Console.WriteLine($"{i} - {item}");
                 Pronostico busqueda = await Pronostico.BuscarPronostico(item);
+                i++;
+                if (busqueda != null)
+                {
+                    busqueda.MostrarDatos();
+                    Console.WriteLine("-------------------");
+                }
+                else
+                {
+                    Console.WriteLine("no encontrado");
+                }
             }
         }
 
-    }
+       
+            public void EliminarUnFavorito()
+            {
+            if (this.CiudadesFavoritas.Count == 0)
+            {
+                Console.WriteLine("No hay ciudades favoritas para eliminar.");
+                Console.ReadKey();
+                return;
+            }
 
-    public enum Tipo
-    {
-        Administrador,   
-        Cliente
-    }
+            int i = 0;
+            string cadena = "";
+            int opcionEliminar;
 
+            Console.WriteLine("--- CIUDADES FAVORITAS ---");
+            foreach (string item in this.CiudadesFavoritas)
+            {
+                Console.WriteLine($"{i} - {item}");
+                i++;
+            }
+
+            int opcionSalir = i;
+            Console.WriteLine($"{opcionSalir} - NINGUNA OPCIÓN (salir)");
+            Console.Write("\nElija qué ciudad desea eliminar: ");
+            cadena = Console.ReadLine();
+
+            while (!int.TryParse(cadena, out opcionEliminar) || opcionEliminar > i || opcionEliminar < 0)
+            {
+                Console.Write("Opción inválida. Elija una de las opciones mostradas: ");
+                cadena = Console.ReadLine();
+            }
+
+            if (opcionEliminar == opcionSalir)
+            {
+                Console.WriteLine("Saliendo sin eliminar...");
+                Console.ReadKey();
+                return;
+            }
+
+            string ciudadEliminada = this.CiudadesFavoritas[opcionEliminar];
+            this.CiudadesFavoritas.RemoveAt(opcionEliminar);
+
+            Console.WriteLine($"\nCiudad '{ciudadEliminada}' eliminada correctamente.");
+            Console.ReadKey();
+        }
+
+
+
+
+    }
 }
+
+public enum Tipo
+{
+    Administrador,
+    Cliente
+}
+

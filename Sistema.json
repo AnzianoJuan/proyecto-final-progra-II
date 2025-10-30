@@ -1,9 +1,48 @@
 {
-  "Historial": [],
+  "Historial": [
+    {
+      "coord": {
+        "lon": -120.501503,
+        "lat": 47.5000992
+      },
+      "weather": [
+        {
+          "id": 804,
+          "main": "Clouds",
+          "description": "nubes",
+          "icon": "04d"
+        }
+      ],
+      "main": {
+        "temp": 10.4099998,
+        "feels_like": 8.97000027,
+        "temp_max": 11.3199997,
+        "temp_min": 9.22000027,
+        "pressure": 1024,
+        "humidity": 56,
+        "sea_level": 1024
+      },
+      "wind": {
+        "speed": 0.850000024,
+        "deg": 94
+      },
+      "sys": {
+        "country": "US"
+      },
+      "visibility": 10000,
+      "clouds": {
+        "all": 100
+      },
+      "name": "Washington"
+    }
+  ],
   "CiudadesFavoritas": [
-    "Ramallo,AR",
-    "Argentina,AR",
-    "Berlin,DE"
+    "Berlin,DE",
+    "Buenos Aires,AR",
+    "S\u00E3o Paulo,BR",
+    "Rosario,AR",
+    "C\u00F3rdoba,AR",
+    "Washington,US"
   ],
   "EstadoUsuario": 0,
   "NombrePersona": "julian",

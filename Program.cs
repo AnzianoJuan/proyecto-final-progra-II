@@ -7,6 +7,9 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
+using System.Data;
+
+//DESPUES ELIMINAR FUNCION DE AgregarCiudadFavorita//
 
 namespace Proyecto_Programacion_II
 {
@@ -64,11 +67,13 @@ namespace Proyecto_Programacion_II
                                
 
                             int opcionMenuPronostico = 0;
-                            while (opcionMenuPronostico != 8)
+                            while (opcionMenuPronostico != 7)
                             {
                                 Console.Clear(); // Limpia antes de mostrar el menú de pronóstico
                                                  // Limpia antes de mostrar el menú de pronóstico
                                 opcionMenuPronostico = MenuPronostico();
+
+                                // menu pronostico
 
                                 if (opcionMenuPronostico == 1)
                                 {
@@ -88,9 +93,28 @@ namespace Proyecto_Programacion_II
                                         pronosticoBuscado.MostrarDatos();
                                         Console.WriteLine("Pronóstico agregado al historial.");
 
-                                        //Console.WriteLine("Quieres agregar esta ciudad a tu lista de Favoritos?");
-                                        //Console.WriteLine("1-YES\n2-NO");
+                                        Console.WriteLine("Quieres agregar esta ciudad/pais a tu lista de Favoritos?");
+                                        Console.WriteLine("1-Si\n2-No");
+                                        string cadena = Console.ReadLine();
+                                        int agregarCiudadInt;
 
+                                        while(!int.TryParse(cadena, out agregarCiudadInt) || agregarCiudadInt < 1 || agregarCiudadInt > 2)
+                                        {
+                                            Console.Write("Elija una de las opciones: ");
+                                            cadena = Console.ReadLine();
+                                        }   
+                                        
+                                        if(agregarCiudadInt == 1)
+                                        {
+                                            cadena = $"{pronosticoBuscado.NombreCiudad},{pronosticoBuscado.Nacion.NombreNacion}";
+                                            cliente.CiudadesFavoritas.Add(cadena);
+                                            GuardarCliente(cliente);
+                                            Console.WriteLine($"agregado a favoritos : {cadena}");
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("no se guardo en favoritos");
+                                        }
                                     }
                                     else
                                     {
@@ -116,21 +140,19 @@ namespace Proyecto_Programacion_II
                                     cliente.EliminarHistorial();
                                     GuardarCliente(cliente);
                                     Console.ReadKey();
-                                }else if(opcionMenuPronostico == 5)
-                                {
-                                    string ciudad, pais;    
-                                    Console.Clear();
-                                    Console.Write("ciudad : ");
-                                    ciudad = Console.ReadLine();
-                                    Console.Write("pais: ");
-                                    pais = Console.ReadLine();
-                                    await cliente.AgregarCiudadFavorita(ciudad,pais);
-                                    GuardarCliente(cliente);
-                                    Console.ReadKey();
-                                }else if(opcionMenuPronostico == 6)
+                                
+                                }
+                                else if(opcionMenuPronostico == 5)
                                 {
                                     Console.Clear();
                                     cliente.MostrarCiudadesFavoritas();
+                                    Console.ReadKey();
+                                }
+                                else if(opcionMenuPronostico == 6)
+                                {
+                                    Console.Clear();
+                                    cliente.EliminarUnFavorito();
+                                    GuardarCliente(cliente);
                                     Console.ReadKey();
                                 }
                             }
@@ -203,10 +225,9 @@ namespace Proyecto_Programacion_II
             Console.WriteLine("2. Mostrar datos del usuario");
             Console.WriteLine("3. Mostrar Historial de pronosticos");
             Console.WriteLine("4. Eliminar Historial");
-            Console.WriteLine("5. Agregar ciudad favorita o pais");
-            Console.WriteLine("6. Mostrar Ciudades favoritas y paises con sus pronosticos");
-            Console.WriteLine("7. Eliminar ciudad favorita");
-            Console.WriteLine("8. Salir");
+            Console.WriteLine("5. Mostrar Ciudades favoritas y paises con sus pronosticos");
+            Console.WriteLine("6. Eliminar ciudad favorita");
+            Console.WriteLine("7. Salir");
             Console.Write("Seleccione una opción: ");
             cadena = Console.ReadLine();
 
@@ -217,10 +238,9 @@ namespace Proyecto_Programacion_II
                 Console.WriteLine("2. Mostrar datos del usuario");
                 Console.WriteLine("3. Mostrar Historial de pronosticos");
                 Console.WriteLine("4. Eliminar Historial");
-                Console.WriteLine("5. Agregar ciudad favorita o pais");
-                Console.WriteLine("6. Mostrar Ciudades favoritas y paises con sus pronosticos");
-                Console.WriteLine("7. Eliminar ciudad favorita");
-                Console.WriteLine("8. Salir");
+                Console.WriteLine("5. Mostrar Ciudades favoritas y paises con sus pronosticos");
+                Console.WriteLine("6. Eliminar ciudad favorita");
+                Console.WriteLine("7. Salir");
                 Console.Write("Seleccione una opción: ");
                 cadena = Console.ReadLine();
             }

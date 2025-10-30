@@ -80,9 +80,7 @@ namespace Proyecto_Programacion_II
             try
             {
                 HttpClient client = new HttpClient();
-                //  Usamos la ciudad y el  país separados por coma en la URL
-                // string busqueda = $"{ciudad.Trim()},{pais.Trim()}";
-
+              
                 uri = $"https://api.openweathermap.org/data/2.5/weather?q={ciudad},{pais}&appid=68fdfc51189ff83605164cee70337d8c&units=metric&lang=es";
 
                 string cadena = await client.GetStringAsync(uri); 
