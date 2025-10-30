@@ -74,7 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cliente.cs" />
+    <Compile Include="Usuario.cs" />
     <Compile Include="Clima.cs" />
     <Compile Include="Coordenadas.cs" />
     <Compile Include="DatosClimaticos.cs" />
@@ -85,11 +85,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Pronostico.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sistema.cs" />
     <Compile Include="Viento.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Cliente.json" />
+    <None Include="Sistema.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

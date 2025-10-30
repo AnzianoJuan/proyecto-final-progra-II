@@ -31,10 +31,12 @@ namespace Proyecto_Programacion_II
 
         [JsonPropertyName("clouds")]
         public Nube Nubes { get; set; } //Representa el porcentaje del cielo cubierto por nubes
-       
+
         [JsonPropertyName("name")]
         public string NombreCiudad { get; set; }
 
+
+        // Propiedad para indicar si los datos son válidos o si representan un error.
         public Pronostico() { }
 
         public Pronostico(Coordenada coordenadas, List<Clima> clima, DatosClimaticos datosdelclima, Viento viento, Nacion nacion, float visibilidad, Nube nubes, string nombreCiudad)
@@ -62,43 +64,54 @@ namespace Proyecto_Programacion_II
             Console.WriteLine($"Nacion : {this.Nacion.NombreNacion}");
             Console.WriteLine($"Visibilidad: {this.Visibilidad}");
             Console.WriteLine($"Nubes: {this.Nubes.Nubosidad}%");
-           
+
 
 
         }
 
+
+
+        // Ahora recibe dos parámetros
         public static async Task<Pronostico> BuscarPronostico(string ciudad, string pais)
         {
             string uri = "";
-            string cadena = "";
-            Pronostico pronostico = new Pronostico();
+            Pronostico pronostico = null;
+
             try
             {
                 HttpClient client = new HttpClient();
+                //  Usamos la ciudad y el  país separados por coma en la URL
+                // string busqueda = $"{ciudad.Trim()},{pais.Trim()}";
+
                 uri = $"https://api.openweathermap.org/data/2.5/weather?q={ciudad},{pais}&appid=68fdfc51189ff83605164cee70337d8c&units=metric&lang=es";
-                cadena = await client.GetStringAsync(uri);
+
+                string cadena = await client.GetStringAsync(uri); // Aquí puede lanzar HttpRequestException (404)
+
                 pronostico = JsonSerializer.Deserialize<Pronostico>(cadena);
+
                 if (pronostico != null)
                 {
-                    pronostico.MostrarDatos();
                     return pronostico;
                 }
                 else
                 {
-                    Console.WriteLine("No se pudo obtener el pronóstico para la ciudad especificada.");
                     return null;
                 }
-
+            }
+            catch (HttpRequestException ex)
+            {
+                // Esto captura el error 404
+                //Console.WriteLine($"Error al buscar: La ciudad '{ciudad},{paisCodigo}' no fue encontrada. (404)");
+                return null;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Error inesperado: {ex.Message}");
                 return null;
             }
-
         }
 
+       
+
     }
-
-
 }

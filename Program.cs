@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -14,21 +13,25 @@ namespace Proyecto_Programacion_II
     internal class Program
     {
 
-        static string RutaJson = "../../Cliente.json";
+        static string RutaJson = "../../Sistema.json";
 
         static async Task Main(string[] args)
         {
             int opcionMenuUsuario = 0;
-            Cliente cliente = CargarCliente(); // intenta cargar el usuario guardado
+            Usuario cliente = CargarCliente(); // intenta cargar el usuario guardado
 
             while (opcionMenuUsuario != 4)
             {
+                Console.Clear(); // Limpia antes de mostrar el menú principal
                 opcionMenuUsuario = MenuUsuario();
+
                 if (opcionMenuUsuario == 1)
                 {
+                    Console.Clear();
                     if (cliente != null)
                     {
                         Console.WriteLine("Ya existe un usuario. No puede crear otro.");
+                        Console.ReadKey(); // Esperar para ver el mensaje
                     }
                     else
                     {
@@ -37,59 +40,123 @@ namespace Proyecto_Programacion_II
 
                         Console.Write("Ingrese contraseña: ");
                         string contraseña = Console.ReadLine();
-
-                        cliente = new Cliente(nombre, contraseña);
+                        cliente = new Usuario(nombre, contraseña);
                         GuardarCliente(cliente);
 
-                        Console.WriteLine("Usuario creado y guardado correctamente.\n");
-
+                        Console.WriteLine("Usuario creado y guardado correctamente.");
+                        Console.ReadKey(); // Esperar para ver el mensaje
                     }
-                }else if(opcionMenuUsuario == 2)
+                }
+                else if (opcionMenuUsuario == 2)
                 {
+                    Console.Clear();
                     if (cliente == null)
                     {
-                        Console.WriteLine("pimero cree un usuario");
+                        Console.WriteLine("Primero cree un usuario.");
+                        Console.ReadKey();
                     }
                     else
                     {
                         bool sesion = IniciarSesion(ref cliente);
 
-                        int opcionMenuPronostico = 0;
-                        while(opcionMenuPronostico != 4)
                         if (sesion)
                         {
-                            opcionMenuPronostico = MenuPronostico();
-                            if(opcionMenuPronostico == 1)
-                            {
-                                    Console.WriteLine("ingrese ciudad");
-                                    string ciudad = Console.ReadLine();
-                                    Console.WriteLine("ingrese pais");
-                                    string pais = Console.ReadLine();
-                                    Pronostico pronosticoBuscado =  await Pronostico.BuscarPronostico(ciudad,pais);
-                                    cliente.Historial.Add(pronosticoBuscado);
-                                    GuardarCliente(cliente);
-                            }else if(opcionMenuPronostico == 2)
-                            {
-                                    cliente.MostrarDatos();
-                            }
-                        }
-                        Console.WriteLine("saliste del menu de pronostico");
+                               
 
+                            int opcionMenuPronostico = 0;
+                            while (opcionMenuPronostico != 8)
+                            {
+                                Console.Clear(); // Limpia antes de mostrar el menú de pronóstico
+                                                 // Limpia antes de mostrar el menú de pronóstico
+                                opcionMenuPronostico = MenuPronostico();
+
+                                if (opcionMenuPronostico == 1)
+                                {
+                                    Console.Clear();
+                                    Console.WriteLine("Ingrese ciudad:");
+                                    string ciudad = Console.ReadLine();
+                                    Console.WriteLine("Ingrese país:");
+                                    string pais = Console.ReadLine();
+
+                                    // NOTA: Asume que Pronostico.BuscarPronostico existe y es visible.
+                                    Pronostico pronosticoBuscado = await Pronostico.BuscarPronostico(ciudad, pais);
+
+                                    if (pronosticoBuscado != null)
+                                    {
+                                        cliente.Historial.Add(pronosticoBuscado);
+                                        GuardarCliente(cliente);
+                                        pronosticoBuscado.MostrarDatos();
+                                        Console.WriteLine("Pronóstico agregado al historial.");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("No se pudo obtener el pronóstico o la deserialización fue nula.");
+                                    }
+                                    Console.ReadKey(); // Esperar para ver el resultado
+                                }
+                                else if (opcionMenuPronostico == 2)
+                                {
+                                    Console.Clear();
+                                    cliente.MostrarDatos(); // Mostrar datos usuario
+                                    Console.ReadKey();
+                                }else if(opcionMenuPronostico == 3)
+                                {
+                                    Console.Clear(); // Limpia antes de mostrar el menú de pronóstico
+                                    cliente.MostrarHistorialPronosticos();
+                                    Console.ReadKey();
+                                }
+                                else if(opcionMenuPronostico == 4)
+                                {
+                                    Console.Clear();
+                                    Console.WriteLine("borrando historial..");
+                                    cliente.EliminarHistorial();
+                                    GuardarCliente(cliente);
+                                    Console.ReadKey();
+                                }else if(opcionMenuPronostico == 5)
+                                {
+                                    string ciudad, pais;    
+                                    Console.Clear();
+                                    Console.Write("ciudad : ");
+                                    ciudad = Console.ReadLine();
+                                    Console.Write("pais (ISO) para mayor precision: ");
+                                    pais = Console.ReadLine();
+                                    await cliente.AgregarCiudadFavorita(ciudad,pais);
+                                    GuardarCliente(cliente);
+                                    Console.ReadKey();
+                                }else if(opcionMenuPronostico == 6)
+                                {
+                                    Console.Clear();
+                                    cliente.MostrarCiudadesFavoritas();
+                                    Console.ReadKey();
+                                }
+                            }
+                            Console.WriteLine("Saliste del menú de pronóstico.");
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            // La sesión no pudo iniciar.
+                            Console.ReadKey();
+                        }
                     }
-                }else if(opcionMenuUsuario == 3)
+                }
+                else if (opcionMenuUsuario == 3)
                 {
-                    if(cliente == null)
+                    Console.Clear();
+                    if (cliente == null)
                     {
-                        Console.WriteLine("pimero cree un usuario");
+                        Console.WriteLine("Primero cree un usuario.");
+                        Console.ReadKey();
                     }
                     else
                     {
                         ModificarUsuario(ref cliente);
-
+                        Console.ReadKey();
                     }
                 }
             }
-            Console.WriteLine("saliste del sistema...");
+            Console.Clear();
+            Console.WriteLine("Saliste del sistema...");
         }
 
         static int MenuUsuario()
@@ -97,17 +164,24 @@ namespace Proyecto_Programacion_II
             int opcion;
             string cadena;
 
-
             Console.WriteLine("--- MENU USUARIO ---");
-            Console.WriteLine("1. crear usuario");
-            Console.WriteLine("2. iniciar sesion");
-            Console.WriteLine("3. modificar usuario , por gusto personal o por si se olvida las credenciales");
-            Console.WriteLine("4. salir");
+            Console.WriteLine("1. Crear usuario");
+            Console.WriteLine("2. Iniciar sesión");
+            Console.WriteLine("3. Modificar usuario (olvido de credenciales)");
+            Console.WriteLine("4. Salir");
+            Console.Write("Seleccione una opción: ");
             cadena = Console.ReadLine();
 
             while (!int.TryParse(cadena, out opcion) || (opcion < 1 || opcion > 4))
             {
-                Console.WriteLine($"INGRESA CORRECTAMENTE , USTED INGRESO : {cadena}");
+                Console.Clear(); // Limpia si la entrada es incorrecta
+                Console.WriteLine($"INGRESA CORRECTAMENTE. USTED INGRESÓ: {cadena}");
+                Console.WriteLine("--- MENU USUARIO ---");
+                Console.WriteLine("1. Crear usuario");
+                Console.WriteLine("2. Iniciar sesión");
+                Console.WriteLine("3. Modificar usuario (olvido de credenciales)");
+                Console.WriteLine("4. Salir");
+                Console.Write("Seleccione una opción: ");
                 cadena = Console.ReadLine();
             }
 
@@ -120,17 +194,31 @@ namespace Proyecto_Programacion_II
             int opcion;
             string cadena;
 
-            Console.WriteLine("--- MENU PRONOSTICO ---");
+            Console.WriteLine("--- MENÚ PRONÓSTICO ---");
             Console.WriteLine("1. Buscar pronóstico");
-            Console.WriteLine("2. Mostrar datos del usuario e historial");
-            Console.WriteLine("3. Agregar ciudad favorita");
-            Console.WriteLine("4. Salir");
-
+            Console.WriteLine("2. Mostrar datos del usuario");
+            Console.WriteLine("3. Mostrar Historial de pronosticos");
+            Console.WriteLine("4. Eliminar Historial");
+            Console.WriteLine("5. Agregar ciudad favorita");
+            Console.WriteLine("6. Mostrar Ciudades favoritas");
+            Console.WriteLine("7. Eliminar ciudad favorita");
+            Console.WriteLine("8. Salir");
+            Console.Write("Seleccione una opción: ");
             cadena = Console.ReadLine();
 
-            while (!int.TryParse(cadena, out opcion) || (opcion < 1 || opcion > 4))
+            while (!int.TryParse(cadena, out opcion) || (opcion < 1 || opcion > 8))
             {
-                Console.WriteLine($"¡Entrada no válida! Por favor ingrese un número entre 1 y 4.");
+                Console.Clear(); // Limpia si la entrada es incorrecta
+                Console.WriteLine("--- MENÚ PRONÓSTICO ---");
+                Console.WriteLine("1. Mostrar datos del usuario");
+                Console.WriteLine("2. Buscar pronóstico");
+                Console.WriteLine("3. Mostrar Historial de pronosticos");
+                Console.WriteLine("4. Eliminar Historial");
+                Console.WriteLine("5. Agregar ciudad favorita");
+                Console.WriteLine("6. Mostrar Ciudades favoritas");
+                Console.WriteLine("7. Eliminar ciudad favorita");
+                Console.WriteLine("8. Salir");
+                Console.Write("Seleccione una opción: ");
                 cadena = Console.ReadLine();
             }
 
@@ -138,30 +226,30 @@ namespace Proyecto_Programacion_II
         }
 
 
-        static void ModificarUsuario(ref Cliente cliente)
+        static void ModificarUsuario(ref Usuario cliente)
         {
-            Console.WriteLine("¿Qué deseas modificar?");
+            Console.Clear();
+            Console.WriteLine("--- MODIFICAR PERFIL ---");
             Console.WriteLine("1. Nombre");
             Console.WriteLine("2. Contraseña");
             Console.WriteLine("3. Salir");
+            Console.Write("¿Qué deseas modificar?: ");
 
             string opcion = Console.ReadLine();
             switch (opcion)
             {
                 case "1":
-                    // Modificar nombre
                     Console.Write("Ingrese el nuevo nombre: ");
                     cliente.NombrePersona = Console.ReadLine();
                     break;
 
                 case "2":
-                    // Modificar contraseña
                     Console.Write("Ingrese la nueva contraseña: ");
                     cliente.Password = Console.ReadLine();
                     break;
 
                 case "3":
-                    Console.WriteLine("saliste de la modificacion");
+                    Console.WriteLine("Saliste de la modificación.");
                     return;
 
                 default:
@@ -174,9 +262,9 @@ namespace Proyecto_Programacion_II
             Console.WriteLine("Datos actualizados correctamente.");
         }
 
-            static bool IniciarSesion(ref Cliente cliente)
-             {
-
+        static bool IniciarSesion(ref Usuario cliente)
+        {
+            Console.WriteLine("--- INICIAR SESIÓN ---");
             Console.Write("Ingrese nombre de usuario: ");
             string nombre = Console.ReadLine();
 
@@ -185,6 +273,7 @@ namespace Proyecto_Programacion_II
 
             if (cliente != null && cliente.NombrePersona == nombre && cliente.Password == contraseña)
             {
+                Console.Clear();
                 Console.WriteLine("¡Bienvenido de nuevo, " + cliente.NombrePersona + "!\n");
                 return true;
             }
@@ -195,13 +284,15 @@ namespace Proyecto_Programacion_II
             }
         }
 
-        static void GuardarCliente(Cliente usuario)
+        // MÉTODOS DE PERSISTENCIA (A REMPLAZAR POR LA CLASE SISTEMA)
+
+        static void GuardarCliente(Usuario usuario)
         {
             string json = JsonSerializer.Serialize(usuario, new JsonSerializerOptions { WriteIndented = true });
             System.IO.File.WriteAllText(RutaJson, json);
         }
 
-        static Cliente CargarCliente()
+        static Usuario CargarCliente()
         {
             try
             {
@@ -212,7 +303,7 @@ namespace Proyecto_Programacion_II
                     return null;
                 }
 
-                return JsonSerializer.Deserialize<Cliente>(json);
+                return JsonSerializer.Deserialize<Usuario>(json);
             }
             catch (IOException ex)
             {
@@ -224,9 +315,6 @@ namespace Proyecto_Programacion_II
                 Console.WriteLine($"Error al deserializar el archivo JSON: {ex.Message}");
                 return null;
             }
-
-
         }
-
     }
 }
