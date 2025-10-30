@@ -56,35 +56,15 @@ namespace Proyecto_Programacion_II
             string ciudadLimpia = ciudad.Trim();
             string paisLimpio = pais.Trim();
 
-            // **PRIMERA VALIDACIÓN: Prevenir códigos de país ridículamente largos**
-            // Un código de país válido (ISO 3166-1 alpha-2) tiene 2 letras.
-            if (paisLimpio.Length > 3 && !paisLimpio.Contains(" "))
-            {
-                Console.WriteLine("❌ Código de país o nombre demasiado largo e inválido. Use el código (ej: AR) o el nombre completo (ej: argentina).");
-                return; // Salir antes de la llamada a la API
-            }
-
             // 2. Llamada a la API
             Pronostico busqueda = await Pronostico.BuscarPronostico(ciudadLimpia, paisLimpio);
 
             if (busqueda != null)
             {
-                // **SEGUNDA VALIDACIÓN: Asegurarse de que el país devuelto es el que queríamos**
-                // Si el país ingresado es inválido (ej: dasdas), la API devuelve un código de país válido (ej: US).
-                // Si el país devuelto por la API NO coincide con lo ingresado (si se ingresó un código corto):
-
-                // 🔑 Solo agregar si el país ingresado tiene sentido (no es solo ruido)
-                // --- En el método AgregarCiudadFavorita ---
-                if (paisLimpio.Length == 2 && busqueda.Nacion != null )
-                {
-                    // ... tu lógica para imprimir el error de no coincidencia ...
-                    Console.WriteLine($"❌ La API encontró '{busqueda.NombreCiudad}, {busqueda.Nacion}' pero no coincide con su búsqueda '{paisLimpio}'.");
-                    return;
-                }
-
+                
                 // Si la búsqueda es exitosa y pasa las validaciones (o el país es un nombre largo y confiamos en la API)
                 Console.WriteLine("✅ AGREGADA LA CIUDAD : " + busqueda.NombreCiudad);
-                this.CiudadesFavoritas.Add($"{ciudadLimpia},{paisLimpio}");
+                this.CiudadesFavoritas.Add($"{busqueda.NombreCiudad},{busqueda.Nacion.NombreNacion}");
             }
             else
             {
@@ -92,13 +72,13 @@ namespace Proyecto_Programacion_II
             }
         }
 
-        public void MostrarCiudadesFavoritas()
+        public async void MostrarCiudadesFavoritas()
         {
-            Console.WriteLine("ciudades favoritas y sus pronosticos");
+            Console.WriteLine("ciudades favoritas / paises y sus pronosticos");
             foreach (string item in this.CiudadesFavoritas)
             {
-
                 Console.WriteLine($"{item}");
+                Pronostico busqueda = await Pronostico.BuscarPronostico(item);
             }
         }
 

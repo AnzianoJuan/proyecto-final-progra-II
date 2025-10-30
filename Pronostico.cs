@@ -85,7 +85,7 @@ namespace Proyecto_Programacion_II
 
                 uri = $"https://api.openweathermap.org/data/2.5/weather?q={ciudad},{pais}&appid=68fdfc51189ff83605164cee70337d8c&units=metric&lang=es";
 
-                string cadena = await client.GetStringAsync(uri); // Aquí puede lanzar HttpRequestException (404)
+                string cadena = await client.GetStringAsync(uri); 
 
                 pronostico = JsonSerializer.Deserialize<Pronostico>(cadena);
 
@@ -101,7 +101,7 @@ namespace Proyecto_Programacion_II
             catch (HttpRequestException ex)
             {
                 // Esto captura el error 404
-                //Console.WriteLine($"Error al buscar: La ciudad '{ciudad},{paisCodigo}' no fue encontrada. (404)");
+                Console.WriteLine($"Error al buscar: La ciudad '{ciudad},{pais}' no fue encontrada. (404)");
                 return null;
             }
             catch (Exception ex)
@@ -111,7 +111,46 @@ namespace Proyecto_Programacion_II
             }
         }
 
-       
+
+        public static async Task<Pronostico> BuscarPronostico(string item)
+        {
+            string uri = "";
+            Pronostico pronostico = null;
+
+            try
+            {
+                HttpClient client = new HttpClient();
+                //  Usamos la ciudad y el  país separados por coma en la URL
+                // string busqueda = $"{ciudad.Trim()},{pais.Trim()}";
+
+                uri = $"https://api.openweathermap.org/data/2.5/weather?q={item}&appid=68fdfc51189ff83605164cee70337d8c&units=metric&lang=es";
+
+                string cadena = await client.GetStringAsync(uri);
+
+                pronostico = JsonSerializer.Deserialize<Pronostico>(cadena);
+
+                if (pronostico != null)
+                {
+                    return pronostico;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Esto captura el error 404
+                Console.WriteLine($"Error al buscar: La ciudad '{item}' no fue encontrada. (404)");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error inesperado: {ex.Message}");
+                return null;
+            }
+        }
+
 
     }
 }

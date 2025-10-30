@@ -87,10 +87,14 @@ namespace Proyecto_Programacion_II
                                         GuardarCliente(cliente);
                                         pronosticoBuscado.MostrarDatos();
                                         Console.WriteLine("Pronóstico agregado al historial.");
+
+                                        //Console.WriteLine("Quieres agregar esta ciudad a tu lista de Favoritos?");
+                                        //Console.WriteLine("1-YES\n2-NO");
+
                                     }
                                     else
                                     {
-                                        Console.WriteLine("No se pudo obtener el pronóstico o la deserialización fue nula.");
+                                        //Console.WriteLine("No se pudo obtener el pronóstico o la deserialización fue nula.");
                                     }
                                     Console.ReadKey(); // Esperar para ver el resultado
                                 }
@@ -118,7 +122,7 @@ namespace Proyecto_Programacion_II
                                     Console.Clear();
                                     Console.Write("ciudad : ");
                                     ciudad = Console.ReadLine();
-                                    Console.Write("pais (ISO) para mayor precision: ");
+                                    Console.Write("pais: ");
                                     pais = Console.ReadLine();
                                     await cliente.AgregarCiudadFavorita(ciudad,pais);
                                     GuardarCliente(cliente);
@@ -199,8 +203,8 @@ namespace Proyecto_Programacion_II
             Console.WriteLine("2. Mostrar datos del usuario");
             Console.WriteLine("3. Mostrar Historial de pronosticos");
             Console.WriteLine("4. Eliminar Historial");
-            Console.WriteLine("5. Agregar ciudad favorita");
-            Console.WriteLine("6. Mostrar Ciudades favoritas");
+            Console.WriteLine("5. Agregar ciudad favorita o pais");
+            Console.WriteLine("6. Mostrar Ciudades favoritas y paises con sus pronosticos");
             Console.WriteLine("7. Eliminar ciudad favorita");
             Console.WriteLine("8. Salir");
             Console.Write("Seleccione una opción: ");
@@ -208,14 +212,13 @@ namespace Proyecto_Programacion_II
 
             while (!int.TryParse(cadena, out opcion) || (opcion < 1 || opcion > 8))
             {
-                Console.Clear(); // Limpia si la entrada es incorrecta
                 Console.WriteLine("--- MENÚ PRONÓSTICO ---");
-                Console.WriteLine("1. Mostrar datos del usuario");
-                Console.WriteLine("2. Buscar pronóstico");
+                Console.WriteLine("1. Buscar pronóstico");
+                Console.WriteLine("2. Mostrar datos del usuario");
                 Console.WriteLine("3. Mostrar Historial de pronosticos");
                 Console.WriteLine("4. Eliminar Historial");
-                Console.WriteLine("5. Agregar ciudad favorita");
-                Console.WriteLine("6. Mostrar Ciudades favoritas");
+                Console.WriteLine("5. Agregar ciudad favorita o pais");
+                Console.WriteLine("6. Mostrar Ciudades favoritas y paises con sus pronosticos");
                 Console.WriteLine("7. Eliminar ciudad favorita");
                 Console.WriteLine("8. Salir");
                 Console.Write("Seleccione una opción: ");
