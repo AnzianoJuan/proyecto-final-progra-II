@@ -13,7 +13,9 @@ namespace Proyecto_Programacion_II
         public List<string> CiudadesFavoritas { get; set; }
         public Tipo EstadoUsuario { get; set; }
 
-        public Usuario(string nombre, string pass) : base(nombre, pass)
+        public long Dni { get; set; }
+
+        public Usuario(string nombre, string pass,long dni) : base(nombre, pass)
         {
             this.NombrePersona = nombre;
             this.Password = pass;
@@ -26,10 +28,11 @@ namespace Proyecto_Programacion_II
 
         public override void MostrarDatos()
         {
-            Console.WriteLine("-------------");
+            Console.WriteLine("---------------------------");
             Console.WriteLine($"Nombre : {this.NombrePersona}");
             Console.WriteLine($"Password : {this.Password}");
-            Console.WriteLine("-------------");
+            Console.WriteLine($"DNI : {this.Dni}");
+            Console.WriteLine("-----------------------------");
 
         }
 

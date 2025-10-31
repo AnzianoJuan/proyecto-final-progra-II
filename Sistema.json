@@ -3,7 +3,16 @@
     "Historial": [],
     "CiudadesFavoritas": [],
     "EstadoUsuario": 0,
+    "Dni": 10000000,
     "NombrePersona": "admin",
     "Password": "admin"
+  },
+  {
+    "Historial": [],
+    "CiudadesFavoritas": [],
+    "EstadoUsuario": 1,
+    "Dni": 33333333,
+    "NombrePersona": "222222",
+    "Password": "3333"
   }
 ]

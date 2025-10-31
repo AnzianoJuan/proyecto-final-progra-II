@@ -1,7 +1,64 @@
-{
-  "Historial": [],
-  "CiudadesFavoritas": [],
-  "EstadoUsuario": 0,
-  "NombrePersona": "juan",
-  "Password": "123"
-}
+[
+  {
+    "Historial": [],
+    "CiudadesFavoritas": [],
+    "EstadoUsuario": 0,
+    "Dni": 10000000,
+    "NombrePersona": "admin",
+    "Password": "admin"
+  },
+  {
+    "Historial": [],
+    "CiudadesFavoritas": [],
+    "EstadoUsuario": 1,
+    "Dni": 22222222,
+    "NombrePersona": "pepe",
+    "Password": "hola123"
+  },
+  {
+    "Historial": [
+      {
+        "coord": {
+          "lon": -60.0070992,
+          "lat": -33.4847984
+        },
+        "weather": [
+          {
+            "id": 800,
+            "main": "Clear",
+            "description": "cielo claro",
+            "icon": "01d"
+          }
+        ],
+        "main": {
+          "temp": 23.5499992,
+          "feels_like": 23.1399994,
+          "temp_max": 23.5499992,
+          "temp_min": 23.5499992,
+          "pressure": 1008,
+          "humidity": 45,
+          "sea_level": 1008
+        },
+        "wind": {
+          "speed": 3.53999996,
+          "deg": 74
+        },
+        "sys": {
+          "country": "AR"
+        },
+        "visibility": 10000,
+        "clouds": {
+          "all": 0
+        },
+        "name": "Ramallo"
+      }
+    ],
+    "CiudadesFavoritas": [
+      "Ramallo,AR"
+    ],
+    "EstadoUsuario": 1,
+    "Dni": 77777777,
+    "NombrePersona": "juan",
+    "Password": "123"
+  }
+]
