@@ -17,8 +17,6 @@ namespace Proyecto_Programacion_II
 
         public Usuario(string nombre, string pass,long dni) : base(nombre, pass)
         {
-            this.NombrePersona = nombre;
-            this.Password = pass;
             this.Historial = new List<Pronostico>();
             this.CiudadesFavoritas = new List<string>();
             this.EstadoUsuario = Tipo.Cliente;
@@ -59,18 +57,18 @@ namespace Proyecto_Programacion_II
             string ciudadLimpia = ciudad.Trim();
             string paisLimpio = pais.Trim();
 
-            // 2. Llamada a la API
+            // 2. Llamada a la API para corroborar si existe
             Pronostico busqueda = await Pronostico.BuscarPronostico(ciudadLimpia, paisLimpio);
             if (busqueda != null)
             {
 
                 // Si la búsqueda es exitosa y pasa las validaciones (o el país es un nombre largo y confiamos en la API)
-                Console.WriteLine("✅ AGREGADA LA CIUDAD : " + busqueda.NombreCiudad);
+                Console.WriteLine(" AGREGADA LA CIUDAD : " + busqueda.NombreCiudad);
                 this.CiudadesFavoritas.Add($"{busqueda.NombreCiudad},{busqueda.Nacion.NombreNacion}");
             }
             else
             {
-                Console.WriteLine("❌ No se encontró la ciudad. No se agregó a favoritos.");
+                Console.WriteLine("No se encontró la ciudad. No se agregó a favoritos.");
             }
         }
 

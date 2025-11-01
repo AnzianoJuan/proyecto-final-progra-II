@@ -4,6 +4,7 @@ using System.IO;
 using Proyecto_Programacion_II;
 using System.Linq;
 using System;
+using System.Net;
 
 public class Sistema
 {
@@ -44,8 +45,8 @@ public class Sistema
                 Console.WriteLine(" Ese nombre de usuario ya está en uso. Intente con otro.\n");
                 continue;
             }
-
-            if (string.IsNullOrWhiteSpace(nombre))
+            // validacion de que no sea vacia
+            if (string.IsNullOrWhiteSpace(nombre) || !nombre.All(char.IsLetter) || nombre.Contains(' '))
             {
                 Console.WriteLine("El nombre no puede estar vacío.");
                 continue;
@@ -67,8 +68,8 @@ public class Sistema
                 Console.WriteLine("Registro cancelado.");
                 return;
             }
-
-            if (string.IsNullOrWhiteSpace(contraseña))
+            //validacion de que este en un formato correcto
+            if (string.IsNullOrWhiteSpace(contraseña) || !contraseña.All(char.IsLetter) || contraseña.Contains(' '))
             {
                 Console.WriteLine("La contraseña no puede estar vacía.\n");
                 continue; //  vuelve a pedirla
@@ -91,7 +92,7 @@ public class Sistema
             }
 
             // Validar formato
-            if (!long.TryParse(dni, out dniLong) || dni.Length != 8)
+            if (!long.TryParse(dni, out dniLong) || dni.Length != 8 ||!dni.All(char.IsDigit))
             {
                 Console.WriteLine(" DNI inválido. Debe tener exactamente 8 dígitos numéricos.\n");
                 continue;
@@ -122,7 +123,7 @@ public class Sistema
             Historial = new List<Pronostico>(),
             Dni = dniLong
         };
-
+        //lo agrega a la lista
         this.Usuarios.Add(nuevoUsuario);
 
         // Guardar en el JSON
@@ -191,7 +192,7 @@ public class Sistema
             if (usuario != null)
             {
                 Console.WriteLine($"\nBienvenido, {usuario.NombrePersona}!");
-                // Podés continuar con la lógica del menú principal o lo que necesites
+                // retorna el usuario para que se pueda manipular en program
                 return usuario;
             }
             else
@@ -233,6 +234,7 @@ public class Sistema
         Console.Write("Ingrese el nombre del usuario a modificar: ");
         string nombre = Console.ReadLine();
 
+        //busca por el nombre de usuario para ver si existe
         Usuario usuario = Usuarios.FirstOrDefault(u =>
             u.NombrePersona.Equals(nombre, StringComparison.OrdinalIgnoreCase));
 
@@ -264,13 +266,13 @@ public class Sistema
                 {
                     Console.Write("Nuevo nombre: ");
                     string nuevoNombre = Console.ReadLine();
-
-                    if (string.IsNullOrWhiteSpace(nuevoNombre))
+                    //validaciom
+                    if (string.IsNullOrWhiteSpace(nuevoNombre) || !nuevoNombre.All(char.IsLetter) || nuevoNombre.Contains(' '))
                     {
                         Console.WriteLine("⚠ El nombre no puede estar vacío.");
                         continue;
                     }
-
+                    //validacion de que no este en uso
                     if (Usuarios.Any(u => u.NombrePersona.Equals(nuevoNombre, StringComparison.OrdinalIgnoreCase) && u != usuario))
                     {
                         Console.WriteLine("⚠️ Ese nombre ya está en uso. Intente con otro.");
@@ -288,16 +290,10 @@ public class Sistema
                 {
                     Console.Write("Nueva contraseña: ");
                     string nuevaPassword = Console.ReadLine();
-
-                    if (string.IsNullOrWhiteSpace(nuevaPassword))
+                    // validacion
+                    if (string.IsNullOrWhiteSpace(nuevaPassword) || !nuevaPassword.All(char.IsLetter) || nuevaPassword.Contains(' '))
                     {
                         Console.WriteLine("⚠ La contraseña no puede estar vacía ni contener solo espacios.");
-                        continue;
-                    }
-
-                    if (nuevaPassword.Contains(" "))
-                    {
-                        Console.WriteLine(" La contraseña no puede contener espacios en blanco.");
                         continue;
                     }
 
@@ -313,12 +309,12 @@ public class Sistema
                     Console.Write("Nuevo DNI (8 dígitos): ");
                     string nuevoDniStr = Console.ReadLine();
 
-                    if (!long.TryParse(nuevoDniStr, out long nuevoDni) || nuevoDniStr.Length != 8)
+                    if (!long.TryParse(nuevoDniStr, out long nuevoDni) || nuevoDniStr.Length != 8 || !nuevoDniStr.All(char.IsDigit))
                     {
                         Console.WriteLine(" El DNI debe tener exactamente 8 dígitos numéricos.");
                         continue;
                     }
-
+                    //validacion de que no este en uso 
                     if (Usuarios.Any(u => u.Dni == nuevoDni && u != usuario))
                     {
                         Console.WriteLine(" Ese DNI ya está registrado. Ingrese otro.");
@@ -354,7 +350,7 @@ public class Sistema
     {
         Console.WriteLine("Ingrese el nombre del usuario que desea eliminar:");
         string nombre = Console.ReadLine();
-
+        //busca por el nombre
         Usuario usuario = Usuarios.FirstOrDefault(u =>
             u.NombrePersona.Equals(nombre, StringComparison.OrdinalIgnoreCase));
 
@@ -367,13 +363,13 @@ public class Sistema
         Console.WriteLine($"Usuario encontrado: {usuario.NombrePersona} (DNI: {usuario.Dni})");
         Console.Write("¿Está seguro que desea eliminar este usuario? (S/N): ");
         string confirmacion = Console.ReadLine();
-
+        //confirmacion
         if (!confirmacion.Equals("S", StringComparison.OrdinalIgnoreCase))
         {
             Console.WriteLine("Operación cancelada.");
             return;
         }
-
+        //eliminacion
         Usuarios.Remove(usuario);
 
         // Guardar la lista actualizada en el JSON

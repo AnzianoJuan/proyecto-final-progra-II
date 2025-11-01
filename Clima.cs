@@ -34,8 +34,6 @@ namespace Proyecto_Programacion_II
         public void MostrarDatos()
         {
             Console.WriteLine($"Estado del Clima: {this.EstadoClima} - {this.Descripcion}");
-            //Console.WriteLine($"Identificador Numerico(ID): {this.ID}");
-            //Console.WriteLine($"Icono: {this.Icono}");
         }
     }
 }

@@ -9,8 +9,6 @@ using System.Text.Json.Serialization;
 using System.IO;
 using System.Data;
 
-// DESPUES ELIMINAR FUNCION DE AgregarCiudadFavorita //
-
 namespace Proyecto_Programacion_II
 {
     internal class Program
@@ -23,10 +21,15 @@ namespace Proyecto_Programacion_II
 
             try
             {
+                // pregunta si existe el archivo para que no tire la excepcion
                 if (File.Exists(RutaJson))
                 {
+                    //asi se evita que exista el archivo , pero que este nulo
                     string json = File.ReadAllText(RutaJson);
-                    usuarios = JsonSerializer.Deserialize<List<Usuario>>(json) ?? new List<Usuario>();
+                    if (!string.IsNullOrWhiteSpace(json))
+                        usuarios = JsonSerializer.Deserialize<List<Usuario>>(json) ?? new List<Usuario>();
+                    else
+                        usuarios = new List<Usuario>();
                 }
                 else
                 {
@@ -55,7 +58,7 @@ namespace Proyecto_Programacion_II
                 File.WriteAllText(RutaJson, jsonNuevo);
             }
 
-            // Creamos el sistema con los usuarios cargados
+            // Creamos el sistema con los usuarios cargados y deserializados para manipularlos
             Sistema sistema = new Sistema(usuarios);
 
             int opcionMenuUsuario = 0;
@@ -67,16 +70,16 @@ namespace Proyecto_Programacion_II
 
                 if (opcionMenuUsuario == 1)
                 {
+                    //pasamos por parametros el rachivo json para que lo agregue a la lista de usuarios y tambien lo use para corroborar si existe
                     sistema.Registrarse(RutaJson);
                 }
                 else if (opcionMenuUsuario == 2)
                 {
-                    //Console.Clear();
                     Usuario usuarioLogeado = sistema.IniciarSesion();
-
-                    if (usuarioLogeado != null)
+                    // si el usuario se logeo correctamente la funcion devuelve un usuario
+                    if (usuarioLogeado != null) // si es distinto de nulo es que se logeo correctamente
                     {
-                        if (usuarioLogeado.EstadoUsuario == Tipo.Administrador)
+                        if (usuarioLogeado.EstadoUsuario == Tipo.Administrador) // si es administrador se le abre otro menu
                         {
                             // Menú para administradores
                             int opcionMenuAdmin = 0;
@@ -86,19 +89,19 @@ namespace Proyecto_Programacion_II
                                 opcionMenuAdmin = MenuAdmin(); // método que muestra opciones de admin
                                 if(opcionMenuAdmin == 1)
                                 {
-                                    sistema.MostrarUsuarios();
+                                    sistema.MostrarUsuarios(); // muestra los usuarios logeados
                                 }
                                 else if(opcionMenuAdmin == 2)
                                 {
-                                    sistema.Registrarse(RutaJson);
+                                    sistema.Registrarse(RutaJson);// registra un usuario de forma manual
                                 }else if(opcionMenuAdmin == 3)
                                 {
                                     Console.Clear();
-                                    sistema.ModificarUsuarioAdmin(RutaJson);
+                                    sistema.ModificarUsuarioAdmin(RutaJson);//modifica usuario de forma manual 
                                 }else if(opcionMenuAdmin == 4)
                                 {
                                     Console.Clear();
-                                    sistema.EliminarUsuarioAdmin(RutaJson);
+                                    sistema.EliminarUsuarioAdmin(RutaJson);// elimina usuario de forma manual
                                 }
                                 //Console.Clear();
                                 Console.ReadKey();
@@ -122,13 +125,13 @@ namespace Proyecto_Programacion_II
                                     Console.WriteLine("Ingrese país:");
                                     string pais = Console.ReadLine();
 
-                                    // NOTA: Asume que Pronostico.BuscarPronostico existe y es visible.
+                                    // busca el pronostico de la ciudad dada
                                     Pronostico pronosticoBuscado = await Pronostico.BuscarPronostico(ciudad, pais);
 
                                     if (pronosticoBuscado != null)
-                                    {
+                                    {// si lo encuentra lo agrega al historial de buscados
                                         usuarioLogeado.Historial.Add(pronosticoBuscado);
-                                        GuardarUsuarios(usuarios);
+                                        GuardarUsuarios(usuarios);// guarda en el json para la serializacion
                                         pronosticoBuscado.MostrarDatos();
                                         Console.WriteLine("Pronóstico agregado al historial.");
 
@@ -136,7 +139,7 @@ namespace Proyecto_Programacion_II
                                         Console.WriteLine("1-Si\n2-No");
                                         string cadena = Console.ReadLine();
                                         int agregarCiudadInt;
-
+                                        // validacion
                                         while (!int.TryParse(cadena, out agregarCiudadInt) || agregarCiudadInt < 1 || agregarCiudadInt > 2)
                                         {
                                             Console.Write("Elija una de las opciones: ");
@@ -145,9 +148,10 @@ namespace Proyecto_Programacion_II
 
                                         if (agregarCiudadInt == 1)
                                         {
+                                            //agrega a la lista de ciudades favoritas del usuario
                                             cadena = $"{pronosticoBuscado.NombreCiudad},{pronosticoBuscado.Nacion.NombreNacion}";
                                             usuarioLogeado.CiudadesFavoritas.Add(cadena);
-                                            GuardarUsuarios(usuarios);
+                                            GuardarUsuarios(usuarios);//serializacion
                                             Console.WriteLine($"agregado a favoritos : {cadena}");
                                         }
                                         else
@@ -198,13 +202,13 @@ namespace Proyecto_Programacion_II
                                                         salirModificacion = true;
                                                         break;
                                                     }
-
-                                                    if (string.IsNullOrWhiteSpace(nuevoNombre))
+                                                    //validacion
+                                                    if (string.IsNullOrWhiteSpace(nuevoNombre) || !nuevoNombre.All(char.IsLetter) || nuevoNombre.Contains(' '))
                                                     {
                                                         Console.WriteLine("El nombre no puede estar vacío.");
                                                         continue;
                                                     }
-
+                                                    //validacion de que no exista ese nombre en la lista
                                                     if (usuarios.Any(u => u.NombrePersona.Equals(nuevoNombre, StringComparison.OrdinalIgnoreCase) && u != usuarioLogeado))
                                                     {
                                                         Console.WriteLine("Ese nombre ya existe, ingrese otro.");
@@ -214,7 +218,7 @@ namespace Proyecto_Programacion_II
                                                 } while (string.IsNullOrWhiteSpace(nuevoNombre) && !salirModificacion);
 
                                                 if (!salirModificacion && nuevoNombre != null)
-                                                {
+                                                {//le asigna al usuario el nuevo nombre si paso la validaciones
                                                     usuarioLogeado.NombrePersona = nuevoNombre;
                                                     modifico = true;
                                                 }
@@ -230,19 +234,19 @@ namespace Proyecto_Programacion_II
                                                     salirModificacion = true;
                                                     break;
                                                 }
-
-                                                if (string.IsNullOrWhiteSpace(nuevaPassword))
+                                                // validacion de la contraseña
+                                                if (string.IsNullOrWhiteSpace(nuevaPassword) || !nuevaPassword.All(char.IsLetter) || nuevaPassword.Contains(' '))
                                                 {
                                                     Console.WriteLine("La contraseña no puede estar vacía.");
                                                     break;
                                                 }
-
+                                                // asignacion de la nueva contraseña
                                                 usuarioLogeado.Password = nuevaPassword;
                                                 modifico = true;
                                                 break;
 
                                             case "3":
-                                                int nuevoDni = 0;
+                                                long nuevoDni = 0;
                                                 bool dniValido = false;
                                                 while (!dniValido && !salirModificacion)
                                                 {
@@ -261,13 +265,13 @@ namespace Proyecto_Programacion_II
                                                         Console.WriteLine("El DNI debe tener exactamente 8 dígitos.");
                                                         continue;
                                                     }
-
-                                                    if (!int.TryParse(dniStr, out nuevoDni))
+                                                    // validacion
+                                                    if (!long.TryParse(dniStr, out nuevoDni) || dniStr.Length != 8 || !dniStr.All(char.IsDigit))
                                                     {
                                                         Console.WriteLine("El DNI debe ser numérico.");
                                                         continue;
                                                     }
-
+                                                    //validacion si ese dni ya existe en la lista
                                                     if (usuarios.Any(u => u.Dni == nuevoDni && u != usuarioLogeado))
                                                     {
                                                         Console.WriteLine("Ese DNI ya existe, ingrese otro.");
@@ -311,20 +315,20 @@ namespace Proyecto_Programacion_II
                                 {
                                     Console.Clear();
                                     Console.WriteLine("borrando historial..");
-                                    usuarioLogeado.EliminarHistorial();
-                                    GuardarUsuarios(usuarios);
+                                    usuarioLogeado.EliminarHistorial();// borra historial de usuario
+                                    GuardarUsuarios(usuarios);//serializa
                                     Console.ReadKey();
                                 }
                                 else if (opcionMenuPronostico == 6)
                                 {
                                     Console.Clear();
-                                    usuarioLogeado.MostrarCiudadesFavoritas();
+                                    usuarioLogeado.MostrarCiudadesFavoritas();//muestra ciudades favoritas junto con sus pronosticos actuales
                                     Console.ReadKey();
                                 }
                                 else if (opcionMenuPronostico == 7)
                                 {
                                     Console.Clear();
-                                    usuarioLogeado.EliminarUnFavorito();
+                                    usuarioLogeado.EliminarUnFavorito();//elimina ciudad favorita
                                     GuardarUsuarios(usuarios);
                                     Console.ReadKey();
                                 }else if (opcionMenuPronostico == 8)
@@ -334,7 +338,7 @@ namespace Proyecto_Programacion_II
                                     Console.WriteLine("!!ESTA SEGURO EN DARSE DE BAJA?!!");
                                     Console.WriteLine("1. si");
                                     Console.WriteLine("2. no");
-
+                                    // se da de baja el mismo usuario de forma manual
                                     string cadena = Console.ReadLine();
                                     while(!int.TryParse(cadena , out eleccion) || eleccion < 1 || eleccion > 2 )
                                     {
@@ -346,8 +350,8 @@ namespace Proyecto_Programacion_II
                                     {
                                         Console.WriteLine("dado de baja correctamente...");
                                         Console.WriteLine("saliendo del programa");
-                                        usuarios.Remove(usuarioLogeado);
-                                        GuardarUsuarios(usuarios);
+                                        usuarios.Remove(usuarioLogeado);//se quita de la lista
+                                        GuardarUsuarios(usuarios);// se serializa
                                         return;
                                     }
                                     else
@@ -395,7 +399,7 @@ namespace Proyecto_Programacion_II
             Console.WriteLine("5. Salir");
             Console.Write("Seleccione una opción: ");
             cadena = Console.ReadLine();
-
+            //validacion
             while (!int.TryParse(cadena, out opcion) || (opcion < 1 || opcion > 5))
             {
                 Console.WriteLine("--- MENÚ ADMINISTRADOR ---");
@@ -426,6 +430,7 @@ namespace Proyecto_Programacion_II
             Console.Write("Seleccione una opción: ");
             cadena = Console.ReadLine();
 
+            //validacion
             while (!int.TryParse(cadena, out opcion) || (opcion < 1 || opcion > 4))
             {
                 Console.Clear(); // Limpia si la entrada es incorrecta
@@ -479,48 +484,17 @@ namespace Proyecto_Programacion_II
             return opcion;
         }
 
-        static void ModificarUsuario(ref Usuario cliente)
-        {
-            Console.Clear();
-            Console.WriteLine("--- MODIFICAR PERFIL ---");
-            Console.WriteLine("1. Nombre");
-            Console.WriteLine("2. Contraseña");
-            Console.WriteLine("3. Salir");
-            Console.Write("¿Qué deseas modificar?: ");
-
-            string opcion = Console.ReadLine();
-            switch (opcion)
-            {
-                case "1":
-                    Console.Write("Ingrese el nuevo nombre: ");
-                    cliente.NombrePersona = Console.ReadLine();
-                    break;
-
-                case "2":
-                    Console.Write("Ingrese la nueva contraseña: ");
-                    cliente.Password = Console.ReadLine();
-                    break;
-
-                case "3":
-                    Console.WriteLine("Saliste de la modificación.");
-                    return;
-
-                default:
-                    Console.WriteLine("Opción no válida.");
-                    return;
-            }
-
-            Console.WriteLine("Datos actualizados correctamente.");
-        }
-
-       
-        
-
-        // MÉTODOS DE PERSISTENCIA (A REMPLAZAR POR LA CLASE SISTEMA)
         public static void GuardarUsuarios(List<Usuario> listaUsuarios)
         {
-            string json = JsonSerializer.Serialize(listaUsuarios, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(RutaJson, json);
+            try
+            {
+                string json = JsonSerializer.Serialize(listaUsuarios, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(RutaJson, json);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al guardar los usuarios: {ex.Message}");
+            }
         }
 
 
