@@ -430,11 +430,10 @@ namespace Proyecto_Programacion_II
             Console.Write("Seleccione una opción: ");
             cadena = Console.ReadLine();
 
-            //validacion
             while (!int.TryParse(cadena, out opcion) || (opcion < 1 || opcion > 4))
             {
                 Console.Clear(); // Limpia si la entrada es incorrecta
-                Console.WriteLine($"INGRESA CORRECTAMENTE. USTED INGRESÓ: {cadena}");
+                Console.WriteLine($"OPCION NO VALIDA. USTED INGRESÓ: {cadena}");
                 Console.WriteLine("--- MENU USUARIO ---");
                 Console.WriteLine("1. Registrarse");
                 Console.WriteLine("2. Iniciar sesión");
@@ -467,6 +466,8 @@ namespace Proyecto_Programacion_II
 
             while (!int.TryParse(cadena, out opcion) || (opcion < 1 || opcion > 9))
             {
+                Console.Clear(); // Limpia si la entrada es incorrecta
+                Console.WriteLine($"OPCION NO VALIDA. USTED INGRESÓ: {cadena}");
                 Console.WriteLine("--- MENÚ PRONÓSTICO ---");
                 Console.WriteLine("1. Buscar pronóstico");
                 Console.WriteLine("2. Mostrar datos del usuario");
