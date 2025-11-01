@@ -20,7 +20,7 @@ namespace Proyecto_Programacion_II
 
         [JsonPropertyName("temp_min")]
         public float Temp_Min { get; set; }
-        
+
         [JsonPropertyName("pressure")]
         public float Presion { get; set; }
 
@@ -30,9 +30,15 @@ namespace Proyecto_Programacion_II
         [JsonPropertyName("sea_level")]
         public float NivelDelMar { get; set; }
 
-        public DatosClimaticos() { }
+        public DateTime FechaHoraBusqueda { get; set; }
 
-        public DatosClimaticos(float temp,float sensacionT, float max, float min,int presion,int humedad, float lvlmar) 
+        public DatosClimaticos()
+        {
+            this.FechaHoraBusqueda = DateTime.Now;
+        }
+
+
+        public DatosClimaticos(float temp, float sensacionT, float max, float min, int presion, int humedad, float lvlmar)
         {
             this.Temperatura = temp;
             this.SensacionTermica = sensacionT;
@@ -41,10 +47,28 @@ namespace Proyecto_Programacion_II
             this.Presion = presion;
             this.Humedad = humedad;
             this.NivelDelMar = lvlmar;
+            this.FechaHoraBusqueda = DateTime.Now;
         }
 
         public void MostrarDatos()
         {
+            Console.Write($"Fecha y Hora de Busqueda: {this.FechaHoraBusqueda.Day}/{this.FechaHoraBusqueda.Month}/{this.FechaHoraBusqueda.Year} "); //agregado fecha/hora
+            if (DateTime.Now.Hour < 10)
+            {
+                Console.Write($"- 0{this.FechaHoraBusqueda.Hour}");
+            }
+            else
+            {
+                Console.Write($"- {this.FechaHoraBusqueda.Hour}");
+            }
+            if (DateTime.Now.Minute < 10)
+            {
+                Console.WriteLine($":0{this.FechaHoraBusqueda.Minute}");
+            }
+            else
+            {
+                Console.WriteLine($":{this.FechaHoraBusqueda.Minute}");
+            }
             Console.WriteLine($"Temperatura: {this.Temperatura}");
             Console.WriteLine($"Sensacion Termica: {this.SensacionTermica}");
             Console.WriteLine($"Temperatura Maxima: {this.Temp_Max}");
@@ -52,6 +76,7 @@ namespace Proyecto_Programacion_II
             Console.WriteLine($"Presion: {this.Presion}");
             Console.WriteLine($"Humedad: {this.Humedad}");
             Console.WriteLine($"Nivel del Mar: {this.NivelDelMar}");
+
         }
     }
 }

@@ -6,5 +6,88 @@
     "Dni": 10000000,
     "NombrePersona": "admin",
     "Password": "admin"
+  },
+  {
+    "Historial": [
+      {
+        "coord": {
+          "lon": -60.0070992,
+          "lat": -33.4847984
+        },
+        "weather": [
+          {
+            "id": 804,
+            "main": "Clouds",
+            "description": "nubes",
+            "icon": "04d"
+          }
+        ],
+        "main": {
+          "temp": 24.5699997,
+          "feels_like": 24.5699997,
+          "temp_max": 24.5699997,
+          "temp_min": 24.5699997,
+          "pressure": 1010,
+          "humidity": 57,
+          "sea_level": 1010,
+          "FechaHoraBusqueda": "2025-11-01T18:59:02.4738383-03:00"
+        },
+        "wind": {
+          "speed": 3.41000009,
+          "deg": 170
+        },
+        "sys": {
+          "country": "AR"
+        },
+        "visibility": 10000,
+        "clouds": {
+          "all": 100
+        },
+        "name": "Ramallo"
+      },
+      {
+        "coord": {
+          "lon": -60.0070992,
+          "lat": -33.4847984
+        },
+        "weather": [
+          {
+            "id": 804,
+            "main": "Clouds",
+            "description": "nubes",
+            "icon": "04d"
+          }
+        ],
+        "main": {
+          "temp": 24.5699997,
+          "feels_like": 24.5699997,
+          "temp_max": 24.5699997,
+          "temp_min": 24.5699997,
+          "pressure": 1010,
+          "humidity": 57,
+          "sea_level": 1010,
+          "FechaHoraBusqueda": "2025-11-01T18:59:30.0271335-03:00"
+        },
+        "wind": {
+          "speed": 3.41000009,
+          "deg": 170
+        },
+        "sys": {
+          "country": "AR"
+        },
+        "visibility": 10000,
+        "clouds": {
+          "all": 100
+        },
+        "name": "Ramallo"
+      }
+    ],
+    "CiudadesFavoritas": [
+      "Ramallo,AR"
+    ],
+    "EstadoUsuario": 1,
+    "Dni": 12345678,
+    "NombrePersona": "juan",
+    "Password": "anziano"
   }
 ]
