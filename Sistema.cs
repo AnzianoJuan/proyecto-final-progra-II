@@ -69,7 +69,7 @@ public class Sistema
                 return;
             }
             //validacion de que este en un formato correcto
-            if (string.IsNullOrWhiteSpace(contraseña) || !contraseña.All(char.IsLetter) || contraseña.Contains(' '))
+            if (string.IsNullOrWhiteSpace(contraseña) || contraseña.Contains(' '))
             {
                 Console.WriteLine("La contraseña no puede estar vacía.\n");
                 continue; //  vuelve a pedirla
@@ -291,7 +291,7 @@ public class Sistema
                     Console.Write("Nueva contraseña: ");
                     string nuevaPassword = Console.ReadLine();
                     // validacion
-                    if (string.IsNullOrWhiteSpace(nuevaPassword) || !nuevaPassword.All(char.IsLetter) || nuevaPassword.Contains(' '))
+                    if (string.IsNullOrWhiteSpace(nuevaPassword) || nuevaPassword.Contains(' '))
                     {
                         Console.WriteLine("⚠ La contraseña no puede estar vacía ni contener solo espacios.");
                         continue;

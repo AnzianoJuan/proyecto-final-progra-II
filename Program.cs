@@ -235,7 +235,7 @@ namespace Proyecto_Programacion_II
                                                     break;
                                                 }
                                                 // validacion de la contraseña
-                                                if (string.IsNullOrWhiteSpace(nuevaPassword) || !nuevaPassword.All(char.IsLetter) || nuevaPassword.Contains(' '))
+                                                if (string.IsNullOrWhiteSpace(nuevaPassword) || nuevaPassword.Contains(' '))
                                                 {
                                                     Console.WriteLine("La contraseña no puede estar vacía.");
                                                     break;
