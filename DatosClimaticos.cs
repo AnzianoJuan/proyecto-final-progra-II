@@ -38,7 +38,7 @@ namespace Proyecto_Programacion_II
         }
 
 
-        public DatosClimaticos(float temp, float sensacionT, float max, float min, int presion, int humedad, float lvlmar)
+        public DatosClimaticos(float temp, float sensacionT, float max, float min, float presion, float humedad, float lvlmar)
         {
             this.Temperatura = temp;
             this.SensacionTermica = sensacionT;

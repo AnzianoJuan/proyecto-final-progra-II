@@ -53,13 +53,11 @@ namespace Proyecto_Programacion_II
 
         public void MostrarDatos()
         {
-            //Console.WriteLine($"Coordenada , Longitud : {this.Coordenadas.Longitud} - Latitud : {this.Coordenadas.Latitud}");
             foreach (Clima clima in this.Clima)
             {
                 clima.MostrarDatos();
             }
             this.DatosDelClima.MostrarDatos();
-            //Console.WriteLine($"Viento , Direccion :{this.Viento.Direccion} - Velocidad : {this.Viento.Velocidad}");
             Console.WriteLine($"Nombre ciudad : {this.NombreCiudad}");
             Console.WriteLine($"Nacion : {this.Nacion.NombreNacion}");
             Console.WriteLine($"Visibilidad: {this.Visibilidad}");
@@ -140,6 +138,7 @@ namespace Proyecto_Programacion_II
             {
                 // Esto captura el error 404
                 Console.WriteLine($"Error al buscar: La ciudad '{item}' no fue encontrada. (404)");
+                Console.WriteLine(ex.Message);
                 return null;
             }
             catch (Exception ex)
